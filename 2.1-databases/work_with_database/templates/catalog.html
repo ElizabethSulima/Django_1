@@ -17,6 +17,23 @@
       <a class="sort-item" href="?sort=max_price">начиная с дорогих</a>
     </div>
 
+    <form method="get" action="{% 'catalog/' 'product_list' %}">
+      <select name="sort">
+        <option value="">Выберите порядок сортировки</option>
+        <option value="name_asc">По названию (по возрастанию)</option>
+        <option value="name_desc">По названию (по убыванию)</option>
+        <option value="price_asc">По цене (по возрастанию)</option>
+        <option value="price_desc">По цене (по убыванию)</option>
+      </select>
+      <input type="submit" value="Сортировать">
+    </form>
+
+    <ul>
+      {% for phone in phones %}
+        <li>{{ phone.name }} - {{ phone.price }}</li>
+      {% endfor %}
+    </ul>
+
     <div class="content">
       {% for phone in phones %}
         <div class="phone">
