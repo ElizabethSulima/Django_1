@@ -4,17 +4,21 @@ from .models import Article, Tag, Scope
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 
+
 class RelationshipInlineFormset(BaseInlineFormSet):
     def clean(self):
         for form in self.forms:
             cleaned_data = form.cleaned_data
-            if cleaned_data:
-                print("Содержимое cleaned_data для формы:")
-                for key, value in cleaned_data.items():
-                    print(f"{key}: {value}")
-                raise ValidationError('Тут всегда ошибка')
-
+            if 'is_main' in cleaned_data and cleaned_data['is_main']:
+                if self.instance.pk:
+                    raise ValidationError('Основной тэг может быть указан только один раз')
+                else:
+                    if self.initial[0].get('is_main', False):
+                        raise ValidationError('Ошибка: Основной тэг уже выбран')
+                    else:
+                        pass
         return super().clean()
+
 
 class RelationshipInline(admin.TabularInline):
     model = Tag
