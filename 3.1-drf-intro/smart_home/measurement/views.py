@@ -59,6 +59,7 @@ class AddMeasurementAPIView(ListAPIView):
             serializer = MeasurementSerializer(measurement)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 # List all sensors
 class ListSensorsAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -77,3 +78,22 @@ class RetrieveSensorAPIView(APIView):
         except Sensor.DoesNotExist:
             return Response({"Sensor.DoesNotExist": str(pk)}, status=status.HTTP_404_NOT_FOUND)
 
+
+class SensorDetailView(APIView):
+    serializer_class = SensorDetailSerializer
+
+    def get(self, request, sensor_id):
+        sensor = Sensor.objects.get(id=sensor_id)
+        serializer = self.serializer_class(sensor)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateSensorView(APIView):
+    serializer_class = SensorDetailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

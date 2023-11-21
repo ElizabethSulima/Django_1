@@ -4,10 +4,25 @@ from .models import Sensor, Measurement
 # TODO: опишите необходимые сериализаторы
 
 
-class MeasurementSerializer(serializers.ModelSerializer):
+# class MeasurementSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Measurement
+#         fields = ['temperature', 'created_at']
+
+
+class AddMeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
-        fields = ['temperature', 'created_at']
+        fields = ['temperature']
+
+
+class MeasurementSerializer(serializers.ModelSerializer):
+    measurements = AddMeasurementSerializer(many=True)
+
+    class Meta:
+        model = Sensor
+        fields = ['temperature', 'created_at', 'measurements']
+
 
 
 class SensorDetailSerializer(serializers.ModelSerializer):
